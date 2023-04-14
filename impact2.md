@@ -7,34 +7,44 @@ There are multiple ways to think about how to apporach this.
 ```mermaid
 flowchart TD
     ApplyCriteria{"Apply\nImpact\nCriteria"}
-    ApplyCriteria-->Proceed;
-    ApplyCriteria-->Collaborate;
-    ApplyCriteria-->NotAligned["Not Aligned"];
-    Collaborate-->SalesSubmits["Sales submit opportunity"];
-    SalesSubmits-->ImpactResponds["Impact committee acknowledges"];
-    ImpactResponds-->Decision{"Impact\nCommittee\ndecison"};
+    ApplyCriteria-->Proceed{{Proceed}};
+    ApplyCriteria-->Collaborate{{Collaborate}};
+    ApplyCriteria-->NotAligned{{"Not Aligned"}};
+    subgraph CollaborateWorkflow [" "]
+        Collaborate-->SalesSubmits["Sales submit opportunity"]
+        SalesSubmits-->ImpactResponds["Impact committee acknowledges"];
+        ImpactResponds-->Decision{"Impact\nCommittee\ndecison"};
+    end;
     Decision-->Proceed;
     Decision-->NotAligned;
 
+    subgraph NotAlignedWorkflow [" "]
+        NotAligned-->SalesSubmitsImpactRed["Sales determines impact opportunity"]
+        SalesSubmitsImpactRed-->ImpactRespondsRed["Impact committee acknowledges"];
+        ImpactRespondsRed-->ImpactDiscussesRed{"Impact\nCommittee\ndecison"};
+    end;
+    ImpactDiscussesRed-->Proceed;
+    ImpactDiscussesRed-->InvolveGovernanceRed[Escalate to Impact\nGovernance Committee]
+    Proceed-.->UpdateCriteria["Update Impact Criteria"];
+    NotAligned-.->UpdateCriteria;
 
-  NotAligned-->SalesSubmitsImpactRed["Sales determines impact opportunity"];
-  SalesSubmitsImpactRed-->ImpactRespondsRed["Impact committee acknowledges"];
-  ImpactRespondsRed-->ImpactDiscussesRed{"Impact\nCommittee\ndecison"};
-  ImpactDiscussesRed-->InvolveGovernanceRed[Escalate to Impact\nGovernance Committee]
-  ImpactDiscussesRed-->DecisionRed{"Decison"};
-  InvolveGovernanceRed-->DecisionRed;
-  DecisionRed-->Proceed;
-  DecisionRed-->NotAligned;
+    subgraph Key
+        direction LR;
+        Sales ~~~ ImpactCommittee["Impact Committee"] ~~~ ImpactGovernance["Impact Governance"];
+    end;
 
-style Proceed fill:lightgreen
-style Collaborate fill:yellow
-style NotAligned fill:red
+style Proceed fill:lightgreen,stroke-width:2px;
+style Collaborate fill:yellow,stroke-width:2px;
+style NotAligned fill:red,stroke-width:2px;
 
+style Sales fill:pink;
 style ApplyCriteria fill:pink;
 style SalesSubmits fill:pink;
 style SalesSubmitsImpactRed fill:pink;
 
 style InvolveGovernanceRed fill:darkblue,color:white;
+style ImpactGovernance fill:darkblue,color:white;
+style Key fill:none,stroke:none;
 ```
 
 ## Values workflow 2
