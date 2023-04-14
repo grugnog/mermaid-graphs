@@ -5,25 +5,36 @@ There are multiple ways to think about how to apporach this.
 ## Agency Workflow 2
 
 ```mermaid
-graph TD
-    CheckColor-->IsGreen{{Proceed}};
-    CheckColor-->isYellow[Collaborate];
-    CheckColor-->isJustificationRequired["Justification Required"];
-    isYellow-->salesAlertsImpactsYellow["Sales sends a message to @impact-committee in #sales-impact"];
-   salesAlertsImpactsYellow-->ImpactResponds["Point person from Impact acknowledges the request. (80% SLA in 1 day, others in 3 days)"];
-   ImpactResponds-->ImpactDiscusses["Point person facilitates the discussion in the Impact committee. Possibly using a rubric."];
-  ImpactDiscusses-->Decision{"Impact committee decides & communicates to Sales."};
-  Decision-->Discussion["If needed a discussion will happen between Sales & Impact"];
-Discussion-->InvolveGovernanceRed;
-Decision-->YesYellow{{Proceed}};
-Decision-->NoYellow{{Stop}};
+flowchart TD
+    ApplyCriteria{"Apply\nImpact\nCriteria"}
+    ApplyCriteria-->Proceed;
+    ApplyCriteria-->Collaborate;
+    ApplyCriteria-->NotAligned["Not Aligned"];
+    Collaborate-->SalesSubmits["Sales submit opportunity"];
+    SalesSubmits-->ImpactResponds["Impact committee acknowledges"];
+    ImpactResponds-->Decision{"Impact\nCommittee\ndecison"};
+    Decision-->Proceed;
+    Decision-->NotAligned;
 
 
-  isJustificationRequired-->salesAlertsImpactsRed["Sales sends a message to @impact-committee in #sales-impact with justification"];
-  salesAlertsImpactsRed-->ImpactRespondsRed["Point person from Impact acknowledges the request. (80% SLA in 1 day, others in 3 days)"];
-  ImpactRespondsRed-->ImpactDiscussesRed["Point person facilitates the discussion in the Impact committee. Possibly using a rubric."];
-ImpactDiscussesRed-->InvolveGovernanceRed[Involve the Impact Governance Committee]
-  ImpactDiscussesRed-->DecisionRed{"Impact committee decides & communicates to Sales."};
+  NotAligned-->SalesSubmitsImpactRed["Sales determines impact opportunity"];
+  SalesSubmitsImpactRed-->ImpactRespondsRed["Impact committee acknowledges"];
+  ImpactRespondsRed-->ImpactDiscussesRed{"Impact\nCommittee\ndecison"};
+  ImpactDiscussesRed-->InvolveGovernanceRed[Escalate to Impact\nGovernance Committee]
+  ImpactDiscussesRed-->DecisionRed{"Decison"};
+  InvolveGovernanceRed-->DecisionRed;
+  DecisionRed-->Proceed;
+  DecisionRed-->NotAligned;
+
+style Proceed fill:lightgreen
+style Collaborate fill:yellow
+style NotAligned fill:red
+
+style ApplyCriteria fill:pink;
+style SalesSubmits fill:pink;
+style SalesSubmitsImpactRed fill:pink;
+
+style InvolveGovernanceRed fill:darkblue,color:white;
 ```
 
 ## Values workflow 2
